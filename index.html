@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>අංක පද්ධති පරිවර්තකය</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Noto Sans Sinhala", Arial, sans-serif;
+      background: linear-gradient(135deg, #1d3557, #457b9d);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .input-group {
+      margin: 10px 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 1.2rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      border: none;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .button {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      color: white;
+      background: #e63946;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .button:hover {
+      background: #f77f00;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.5rem;
+    }
+
+    .explanation {
+      margin-top: 20px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    .step {
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px;
+      border-radius: 5px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>අංක පද්ධති පරිවර්තකය</h1>
+    <div class="input-group">
+      <label for="numberInput">අංකය ඇතුලත් කරන්න:</label>
+      <input type="text" id="numberInput" placeholder="උදා: 1010">
+    </div>
+    <div class="input-group">
+      <label for="fromBase">පිටුමන පද්ධතිය:</label>
+      <select id="fromBase">
+        <option value="2">ද්විතීක</option>
+        <option value="8">අෂ්ටක</option>
+        <option value="10">දශම</option>
+        <option value="16">ෂෝඩශ</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="toBase">ඉලක්කගත පද්ධතිය:</label>
+      <select id="toBase">
+        <option value="2">ද්විතීක</option>
+        <option value="8">අෂ්ටක</option>
+        <option value="10">දශම</option>
+        <option value="16">ෂෝඩශ</option>
+      </select>
+    </div>
+    <button class="button" onclick="convertNumber()">පරිවර්තනය කරන්න</button>
+    <div class="result" id="result">ප්‍රතිඵලය මෙහි පෙන්වනු ඇත</div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+
+  <script>
+    function convertNumber() {
+      const number = document.getElementById('numberInput').value;
+      const fromBase = parseInt(document.getElementById('fromBase').value);
+      const toBase = parseInt(document.getElementById('toBase').value);
+
+      try {
+        const decimal = parseInt(number, fromBase);
+        const converted = decimal.toString(toBase).toUpperCase();
+
+        document.getElementById('result').innerText = `ප්‍රතිඵලය: ${converted}`;
+
+        let decimalValue = 0;
+        let power = number.length - 1;
+        let stepsHTML = "";
+        let calculationSteps = "";
+        for (let i = 0; i < number.length; i++) {
+          decimalValue += parseInt(number[i], fromBase) * Math.pow(fromBase, power);
+          calculationSteps += `${number[i]} × ${fromBase}<sup>${power--}</sup> = ${parseInt(number[i], fromBase) * Math.pow(fromBase, power + 1)}<br>`;
+        }
+
+        let explanationText = `${number} (${fromBase}-අංක පද්ධතියෙන්) → ${toBase}-අංක පද්ධතියට පරිවර්තනය කිරීමට:\n\n`;
+        explanationText += `ඔබේ අංකය ${decimalValue} ලෙස දශමයට පරිවර්තනය වෙයි.\n`;
+        explanationText += `${decimalValue} → ${toBase}-අංක පද්ධතියට: ${converted}`;
+
+        document.getElementById('explanation').innerHTML = `
+          <div class="step">කළ හැකි ගණනයන්:</div>
+          ${calculationSteps}
+          <div class="step">එකතුව: ${decimalValue}</div>
+          <br> පරිවර්තනය: ${decimalValue} → ${converted}
+        `;
+      } catch (error) {
+        document.getElementById('result').innerText = 'වැරදි දත්ත ඇතුල්කොට ඇත!';
+        document.getElementById('explanation').innerText = '';
+      }
+    }
+  </script>
+</body>
+</html>
